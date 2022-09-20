@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const { MyError } = require("../libs/error/myError");
+const httpStatusCodes = require("../libs/httpStatusCodes");
 
 const router = Router()
 
@@ -10,7 +11,7 @@ const getData = (id) => {
     }
 
     if (isNaN(Number(id)) || Number(id) < 1) {
-        throw new MyError('ID type mismatch')
+        throw new MyError('ID type mismatch', httpStatusCodes.BAD_REQUEST)
     }
 
     // fake control for 404 handler
@@ -32,7 +33,7 @@ router.get('/:id', async (req, res, next) => {
         const result = getData(req.params.id);
 
         if (!result?.data) {
-            throw new MyError(`Book with id: ${req.params.id} not found.`)
+            throw new MyError(`Book with id: ${req.params.id} not found.`, httpStatusCodes.NOT_FOUND)
         }
 
         return res.send(result);

@@ -7,6 +7,7 @@ const httpLogger = require('./loggers/httpLogger')
 
 const { returnError, isOperationalError, logError } = require('./middlewares/ErrorHandler');
 const { MyError } = require('./libs/error/myError');
+const httpStatusCodes = require('./libs/httpStatusCodes');
 
 const app = express();
 const port = 8090;
@@ -33,8 +34,7 @@ app.use('/api', apiRoutes)
 require('./routes')(app, apiRoutes)
 
 app.use((req, res, next) => {
-    return next(new MyError(`${req.path} => This route does not exist.`))
-    // return next({ statusCode:404, message: `${req.path} => This route does not exist.` });
+    return next(new MyError(`${req.path} => This route does not exist.`, httpStatusCodes.NOT_FOUND))
 });
 
 app.use(logError)
